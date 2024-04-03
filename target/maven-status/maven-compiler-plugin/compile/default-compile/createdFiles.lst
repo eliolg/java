@@ -1,3 +1,4 @@
+com\epf\rentmanager\AppConfiguration.class
 com\epf\rentmanager\model\Reservation.class
 com\epf\rentmanager\servlet\ReservationListServlet.class
 com\epf\rentmanager\exception\DaoException.class

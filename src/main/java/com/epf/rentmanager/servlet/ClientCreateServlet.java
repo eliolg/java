@@ -1,19 +1,22 @@
 package com.epf.rentmanager.servlet;
 import com.epf.rentmanager.exception.*;
 import com.epf.rentmanager.model.*;
+import com.epf.rentmanager.configuration.AppConfiguration;
 import com.epf.rentmanager.service.*;
+import org.springframework.context.*;
+import org.springframework.context.annotation.*;
 
 import javax.servlet.*;
 import javax.servlet.annotation.*;
 import javax.servlet.http.*;
 import java.io.*;
-import java.time.*;
 import java.time.LocalDate;
 
 @WebServlet("/users/create")
 public class ClientCreateServlet extends HttpServlet {
 
-    ClientService clientService = new ClientService();
+    ApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
+    ClientService clientService = context.getBean(ClientService.class);
 
     /**
      *

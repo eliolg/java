@@ -1,18 +1,28 @@
 package com.epf.rentmanager.ui.cli.main;
 
+import com.epf.rentmanager.configuration.*;
 import com.epf.rentmanager.exception.*;
 import com.epf.rentmanager.model.*;
 import com.epf.rentmanager.service.*;
 import com.epf.rentmanager.utils.*;
+import org.springframework.context.*;
+import org.springframework.context.annotation.*;
 
 import java.sql.*;
 import java.time.*;
 
 public class cli extends IOUtils {
-    private ClientService clientService = new ClientService();
-    private VehicleService vehicleService = new VehicleService();
+    ClientService clientService;
+    ReservationService reservationService;
+    VehicleService vehicleService;
 
-    private ReservationService reservationService = new ReservationService();
+    public cli() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
+        reservationService = context.getBean(ReservationService.class);
+
+        clientService = context.getBean(ClientService.class);
+        vehicleService = context.getBean(VehicleService.class);
+    }
 
     public void createClient() throws ServiceException, DaoException {
         print("Veuillez saisir les paramètres de saisies du client suivant :");

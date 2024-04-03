@@ -1,6 +1,10 @@
 package com.epf.rentmanager.servlet;
 
+import com.epf.rentmanager.*;
 import com.epf.rentmanager.service.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.context.*;
+import org.springframework.context.annotation.*;
 
 import java.io.IOException;
 
@@ -13,7 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/home")
 public class HomeServlet extends HttpServlet {
 
-	VehicleService vehicleService = new VehicleService();
+	@Autowired
+	VehicleService vehicleService;
+
 	/**
 	 * 
 	 */

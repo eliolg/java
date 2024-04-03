@@ -12,8 +12,7 @@ import org.springframework.stereotype.*;
 
 @Repository
 public class VehicleDao {
-	
-	private static VehicleDao instance = null;
+
 	private VehicleDao() {}
 	
 	private static final String CREATE_VEHICLE_QUERY = "INSERT INTO Vehicle(constructeur, modele, nb_places) VALUES(?, ?, ?);";

@@ -7,24 +7,18 @@ import com.epf.rentmanager.dao.ClientDao;
 
 import com.epf.rentmanager.exception.*;
 import com.epf.rentmanager.model.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.stereotype.*;
 
-
+@Service
 public class ClientService {
-
+	@Autowired
 	private ClientDao clientDao;
-	public static ClientService instance;
-
-	public ClientService() {
-		this.clientDao = ClientDao.getInstance();
+	@Autowired
+	public ClientService(ClientDao clientDao) {
+		this.clientDao = clientDao;
 	}
-	
-	public static ClientService getInstance() {
-		if (instance == null) {
-			instance = new ClientService();
-		}
 
-		return instance;
-	}
 	
 	
 	public long create(Client client) throws ServiceException, DaoException {

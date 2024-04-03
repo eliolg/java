@@ -1,13 +1,15 @@
 package com.epf.rentmanager.servlet;
+import com.epf.rentmanager.configuration.*;
 import com.epf.rentmanager.exception.*;
 import com.epf.rentmanager.model.*;
 import com.epf.rentmanager.service.*;
+import org.springframework.context.*;
+import org.springframework.context.annotation.*;
 
 import javax.servlet.*;
 import javax.servlet.annotation.*;
 import javax.servlet.http.*;
 import java.io.*;
-import java.time.*;
 import java.time.LocalDate;
 import java.time.format.*;
 import java.util.*;
@@ -15,9 +17,11 @@ import java.util.*;
 @WebServlet("/rents/create")
 public class ReservationCreateServlet extends HttpServlet {
 
-    ReservationService resService = new ReservationService();
-    ClientService clientService = new ClientService();
-    VehicleService vehicleService = new VehicleService();
+    ApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
+    ReservationService resService = context.getBean(ReservationService.class);
+
+    ClientService clientService = context.getBean(ClientService.class);
+    VehicleService vehicleService = context.getBean(VehicleService.class);
 
     /**
      *

@@ -6,23 +6,26 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.epf.rentmanager.configuration.*;
 import com.epf.rentmanager.exception.*;
 import com.epf.rentmanager.persistence.ConnectionManager;
 import com.epf.rentmanager.model.*;
 import com.epf.rentmanager.service.*;
+import org.springframework.context.*;
+import org.springframework.context.annotation.*;
 import org.springframework.stereotype.*;
 
 @Repository
 public class ReservationDao {
 
-	private ClientService c_service = new ClientService();
-	private VehicleService v_service = new VehicleService();
+	ApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
 
-	private static ReservationDao instance = null;
+	ClientService c_service = context.getBean(ClientService.class);
+	VehicleService v_service = context.getBean(VehicleService.class);
+
 	private ReservationDao() {}
 	
 	private static final String CREATE_RESERVATION_QUERY = "INSERT INTO Reservation(client_id, vehicle_id, debut, fin) VALUES(?, ?, ?, ?);";

@@ -3,27 +3,21 @@ package com.epf.rentmanager.service;
 import com.epf.rentmanager.dao.*;
 import com.epf.rentmanager.exception.*;
 import com.epf.rentmanager.model.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.stereotype.*;
 
 import java.sql.*;
 import java.util.*;
 
+@Service
 public class ReservationService {
 
     private ReservationDao reservationDao;
-
-    public static ReservationService instance;
-
-    public ReservationService() {
-        this.reservationDao = ReservationDao.getInstance();
+    @Autowired
+    public ReservationService(ReservationDao reservationDao) {
+        this.reservationDao = reservationDao;
     }
 
-    public static ReservationService getInstance() {
-        if (instance == null) {
-            instance = new ReservationService();
-        }
-
-        return instance;
-    }
 
     public long create(Reservation reservation) throws ServiceException, DaoException {
         if (reservation.vehicle().id() <= 0 || reservation.client().id() <= 0) {

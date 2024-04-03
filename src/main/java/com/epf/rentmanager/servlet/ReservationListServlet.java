@@ -1,8 +1,11 @@
 package com.epf.rentmanager.servlet;
 
+import com.epf.rentmanager.configuration.*;
 import com.epf.rentmanager.exception.*;
 import com.epf.rentmanager.model.*;
 import com.epf.rentmanager.service.*;
+import org.springframework.context.*;
+import org.springframework.context.annotation.*;
 
 import javax.servlet.*;
 import javax.servlet.annotation.*;
@@ -13,7 +16,9 @@ import java.util.*;
 @WebServlet("/rents")
 public class ReservationListServlet extends HttpServlet {
 
-    ReservationService resService = new ReservationService();
+    ApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
+    ReservationService resService = context.getBean(ReservationService.class);
+
     /**
      *
      */
