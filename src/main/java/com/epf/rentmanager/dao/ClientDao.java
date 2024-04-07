@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.epf.rentmanager.exception.*;
 import com.epf.rentmanager.persistence.ConnectionManager;
-import com.epf.rentmanager.exception.DaoException;
 import com.epf.rentmanager.model.*;
 import org.springframework.stereotype.*;
 
@@ -29,7 +29,7 @@ public class ClientDao {
 	private static final String FIND_CLIENT_BY_NAME_QUERY = "SELECT nom, prenom, email, naissance FROM Client WHERE nom=? AND prenom=?;";
 	private static final String FIND_CLIENTS_QUERY = "SELECT id, nom, prenom, email, naissance FROM Client;";
 
-	private static final String COUNT_VEHICLES_QUERY = "SELECT COUNT(id) AS count FROM Client;";
+	private static final String COUNT_CLIENTS_QUERY = "SELECT COUNT(id) AS count FROM Client;";
 	
 	public long create(Client client) throws DaoException{
 		int id = 0;
@@ -47,7 +47,7 @@ public class ClientDao {
 		}catch(SQLException e){
 			throw new DaoException(e.getMessage());
 			}
-		return id;
+		return 0;
 	}
 	
 	public long delete(Client client) throws DaoException {
@@ -62,7 +62,7 @@ public class ClientDao {
 		return nb_modified_ligns;
 	}
 
-	public Optional<Client> findById(long id) throws DaoException {
+	public Optional<Client> findById(long id) throws DaoException, ServiceException {
 		try (Connection connexion = ConnectionManager.getConnection();
 			PreparedStatement stmt = connexion.prepareStatement(FIND_CLIENT_QUERY)){
 			stmt.setLong(1, id);
@@ -76,6 +76,7 @@ public class ClientDao {
 
 			}
 		}catch(Exception e){
+			throw new ServiceException("erreur service");
 		}
 		return Optional.empty();
 	}
@@ -116,6 +117,21 @@ public class ClientDao {
 		}catch(Exception e){
 		}
 		return list;
+	}
+
+	public int count(){
+		int count= 0;
+		try (Connection connexion = ConnectionManager.getConnection();
+			 PreparedStatement stmt = connexion.prepareStatement(COUNT_CLIENTS_QUERY, Statement.RETURN_GENERATED_KEYS)){
+			ResultSet resultSet = stmt.executeQuery();
+			if (resultSet.next()){
+				count = resultSet.getInt(1);
+			}
+
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+		}
+		return count;
 	}
 
 }

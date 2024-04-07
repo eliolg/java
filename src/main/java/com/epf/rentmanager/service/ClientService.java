@@ -1,5 +1,8 @@
 package com.epf.rentmanager.service;
 
+import java.sql.*;
+import java.time.*;
+import java.time.temporal.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +17,12 @@ import org.springframework.stereotype.*;
 public class ClientService {
 	@Autowired
 	private ClientDao clientDao;
+
+	@Autowired
+	private ReservationService reservationService;
+
+	@Autowired
+	private  VehicleService vehicleService;
 	@Autowired
 	public ClientService(ClientDao clientDao) {
 		this.clientDao = clientDao;
@@ -22,6 +31,21 @@ public class ClientService {
 	
 	
 	public long create(Client client) throws ServiceException, DaoException {
+		LocalDate currentDate = LocalDate.now();
+		if (ChronoUnit.YEARS.between(client.naissance(), currentDate) < 18 ){
+			throw new ServiceException("L'age d'un client doit être supérieur à 18 ans");
+		}
+
+		for (Client clients : findAll()){
+			if (client.email().equals(clients.email())){
+				throw new ServiceException("Email déjà utilisé");
+			}
+		}
+
+		if (client.nom().length() < 2 || client.prenom().length() < 2){
+			throw new ServiceException("Le nom et le prénom d'un client doivent faire au moins 3 caractères");
+		}
+
 		if (client.nom().isEmpty() || client.prenom().isEmpty()) {
 			throw new ServiceException("erreur service");
 		}
@@ -47,6 +71,21 @@ public class ClientService {
 
 	public List<Client> findAll() throws ServiceException, DaoException {
 		return clientDao.findAll();
+	}
+
+	public int count(){
+		return clientDao.count();
+	}
+
+	public int delete(Client client) throws DaoException, ServiceException, SQLException {
+		for (Reservation reservation : reservationService.findAll()){
+			if (reservation.client().id() == client.id()){
+				reservationService.delete(reservation);
+			}
+		}
+
+		clientDao.delete(client);
+		return 0;
 	}
 	
 }

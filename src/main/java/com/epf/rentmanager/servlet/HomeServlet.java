@@ -18,6 +18,9 @@ public class HomeServlet extends HttpServlet {
 	@Autowired
 	ReservationService reservationService;
 
+	@Autowired
+	ClientService clientService;
+
 	@Override
 	public void init() throws ServletException {
 		super.init();
@@ -30,8 +33,9 @@ public class HomeServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		request.setAttribute("nb",String.valueOf(vehicleService.count()));
+		request.setAttribute("nb_veh",String.valueOf(vehicleService.count()));
 		request.setAttribute("nb_res", String.valueOf(reservationService.count()));
+		request.setAttribute("nb_clt", String.valueOf(clientService.count()));
 		this.getServletContext().getRequestDispatcher("/WEB-INF/views/home.jsp").forward(request, response);
 
 

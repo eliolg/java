@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
 import java.sql.*;
+import java.time.temporal.*;
 import java.util.*;
 
 @Service
@@ -20,6 +21,18 @@ public class ReservationService {
 
 
     public long create(Reservation reservation) throws ServiceException, DaoException {
+        for (Reservation resa : findAll()){
+            if (resa.vehicle().equals(reservation.vehicle())){
+                if(!reservation.fin().isBefore(resa.debut()) && reservation.debut().isAfter(resa.fin())){
+                    throw new ServiceException("Cette voiture est déjà réservée sur cet intervalle de temps");
+                }
+            }
+        }
+
+        if (ChronoUnit.DAYS.between(reservation.debut(), reservation.fin())>30){
+            throw new ServiceException("Une voiture ne peux pas être réservé 30 jours de suite sans pause");
+        }
+
         if (reservation.vehicle().id() <= 0 || reservation.client().id() <= 0) {
             throw new ServiceException("erreur service");
         }
@@ -40,5 +53,14 @@ public class ReservationService {
 
     public void delete(int id) throws ServiceException, DaoException, SQLException {
         reservationDao.delete(id);
+    }
+
+    public int count(){
+        return reservationDao.count();
+    }
+
+    public int delete(Reservation reservation) throws SQLException, DaoException {
+        reservationDao.delete(reservation.id());
+        return 0;
     }
 }

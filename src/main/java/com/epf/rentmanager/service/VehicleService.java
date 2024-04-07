@@ -1,5 +1,6 @@
 package com.epf.rentmanager.service;
 
+import java.sql.*;
 import java.util.List;
 
 import com.epf.rentmanager.exception.DaoException;
@@ -22,11 +23,14 @@ public class VehicleService {
 		this.vehicleDao = vehicleDao;
 	}
 
+	@Autowired
+	private ReservationService reservationService;
+
 	
 	
 	public long create(Vehicle vehicle) throws ServiceException, DaoException {
-		if (vehicle.constructeur().isEmpty() || vehicle.nb_places() <= 1){
-			throw new ServiceException("erreur service");
+		if (vehicle.constructeur().isEmpty() || vehicle.modele().isEmpty() || vehicle.nb_places() <= 1 || vehicle.nb_places() > 9 ){
+			throw new ServiceException("Une voiture doit avoir un modèle et un constructeur, son nombre de place doit être compris entre 2 et 9");
 		}
 		return vehicleDao.create(vehicle);
 	}
@@ -53,6 +57,17 @@ public class VehicleService {
 
 	public int count(){
 		return vehicleDao.count();
+	}
+
+	public int delete(Vehicle vehicle) throws ServiceException, DaoException, SQLException {
+		for (Reservation reservation : reservationService.findAll()){
+			if (reservation.vehicle().id() == vehicle.id()){
+				reservationService.delete(reservation);
+			}
+		}
+
+		vehicleDao.delete(vehicle);
+		return 0;
 	}
 	
 }

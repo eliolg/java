@@ -131,7 +131,7 @@ public class ReservationDao {
 	public int count(){
 		int count= 0;
 		try (Connection connexion = ConnectionManager.getConnection();
-			 PreparedStatement stmt = connexion.prepareStatement(COUNT_RESERVATIONS_QUERY_QUERY, Statement.RETURN_GENERATED_KEYS)){
+			 PreparedStatement stmt = connexion.prepareStatement(COUNT_RESERVATIONS_QUERY, Statement.RETURN_GENERATED_KEYS)){
 			ResultSet resultSet = stmt.executeQuery();
 			if (resultSet.next()){
 				count = resultSet.getInt(1);
@@ -145,5 +145,5 @@ public class ReservationDao {
 
 }
 
-	}
+
 
