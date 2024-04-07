@@ -3,8 +3,10 @@ import com.epf.rentmanager.exception.*;
 import com.epf.rentmanager.model.*;
 import com.epf.rentmanager.configuration.AppConfiguration;
 import com.epf.rentmanager.service.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
 import org.springframework.context.annotation.*;
+import org.springframework.web.context.support.*;
 
 import javax.servlet.*;
 import javax.servlet.annotation.*;
@@ -15,8 +17,14 @@ import java.time.LocalDate;
 @WebServlet("/users/create")
 public class ClientCreateServlet extends HttpServlet {
 
-    ApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
-    ClientService clientService = context.getBean(ClientService.class);
+    @Autowired
+    ClientService clientService;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    }
 
     /**
      *

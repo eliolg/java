@@ -4,8 +4,10 @@ import com.epf.rentmanager.configuration.*;
 import com.epf.rentmanager.exception.*;
 import com.epf.rentmanager.model.*;
 import com.epf.rentmanager.service.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
 import org.springframework.context.annotation.*;
+import org.springframework.web.context.support.*;
 
 import javax.servlet.*;
 import javax.servlet.annotation.*;
@@ -15,8 +17,14 @@ import java.io.*;
 @WebServlet("/cars/create")
 public class VehicleCreateServlet extends HttpServlet {
 
-    ApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
-    VehicleService vehicleService = context.getBean(VehicleService.class);
+    @Autowired
+    VehicleService vehicleService;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    }
 
     /**
      *

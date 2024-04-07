@@ -14,6 +14,7 @@ import com.epf.rentmanager.exception.*;
 import com.epf.rentmanager.persistence.ConnectionManager;
 import com.epf.rentmanager.model.*;
 import com.epf.rentmanager.service.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
 import org.springframework.context.annotation.*;
 import org.springframework.stereotype.*;
@@ -21,10 +22,11 @@ import org.springframework.stereotype.*;
 @Repository
 public class ReservationDao {
 
-	ApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
 
-	ClientService c_service = context.getBean(ClientService.class);
-	VehicleService v_service = context.getBean(VehicleService.class);
+	@Autowired
+	ClientService c_service;
+	@Autowired
+	VehicleService v_service;
 
 	private ReservationDao() {}
 	
@@ -33,6 +35,8 @@ public class ReservationDao {
 	private static final String FIND_RESERVATIONS_BY_CLIENT_QUERY = "SELECT id, vehicle_id, debut, fin FROM Reservation WHERE client_id=?;";
 	private static final String FIND_RESERVATIONS_BY_VEHICLE_QUERY = "SELECT id, client_id, debut, fin FROM Reservation WHERE vehicle_id=?;";
 	private static final String FIND_RESERVATIONS_QUERY = "SELECT id, client_id, vehicle_id, debut, fin FROM Reservation;";
+
+	private static final String COUNT_RESERVATIONS_QUERY = "SELECT COUNT(id) AS count FROM Reservation;";
 		
 	public long create(Reservation reservation) throws DaoException {
 		int id = 0;
@@ -123,5 +127,23 @@ public class ReservationDao {
 
 		return list;
 	}
+
+	public int count(){
+		int count= 0;
+		try (Connection connexion = ConnectionManager.getConnection();
+			 PreparedStatement stmt = connexion.prepareStatement(COUNT_RESERVATIONS_QUERY_QUERY, Statement.RETURN_GENERATED_KEYS)){
+			ResultSet resultSet = stmt.executeQuery();
+			if (resultSet.next()){
+				count = resultSet.getInt(1);
+			}
+
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+		}
+		return count;
+	}
+
+}
+
 	}
 
