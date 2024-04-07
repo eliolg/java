@@ -12,6 +12,9 @@ import com.epf.rentmanager.exception.*;
 import com.epf.rentmanager.model.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
+import org.springframework.web.context.support.*;
+
+import javax.servlet.*;
 
 @Service
 public class ClientService {
@@ -22,13 +25,10 @@ public class ClientService {
 	private ReservationService reservationService;
 
 	@Autowired
-	private  VehicleService vehicleService;
-	@Autowired
 	public ClientService(ClientDao clientDao) {
 		this.clientDao = clientDao;
 	}
 
-	
 	
 	public long create(Client client) throws ServiceException, DaoException {
 		LocalDate currentDate = LocalDate.now();

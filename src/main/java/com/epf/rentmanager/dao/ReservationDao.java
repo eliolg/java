@@ -6,8 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import com.epf.rentmanager.configuration.*;
 import com.epf.rentmanager.exception.*;
@@ -37,6 +36,8 @@ public class ReservationDao {
 	private static final String FIND_RESERVATIONS_QUERY = "SELECT id, client_id, vehicle_id, debut, fin FROM Reservation;";
 
 	private static final String COUNT_RESERVATIONS_QUERY = "SELECT COUNT(id) AS count FROM Reservation;";
+
+	private static final String FIND_RESERVATIONS_BY_ID_QUERY = "SELECT id, client_id, vehicle_id, debut, fin FROM Reservation WHERE id=?;";
 		
 	public long create(Reservation reservation) throws DaoException {
 		int id = 0;
@@ -68,6 +69,21 @@ public class ReservationDao {
 			throw new SQLException(e);
 		}
 		return nb_modified_ligns;
+	}
+
+	public Optional<Reservation> findById(long id) throws DaoException {
+		try (Connection connexion = ConnectionManager.getConnection();
+			 PreparedStatement stmt = connexion.prepareStatement(FIND_RESERVATIONS_BY_ID_QUERY)){
+			stmt.setLong(1, id);
+			ResultSet resultSet = stmt.executeQuery();
+			if (resultSet.next()){
+				return Optional.of(new Reservation(resultSet.getInt("id"), c_service.findById(resultSet.getInt("client_id")), v_service.findById((int) resultSet.getInt("vehicle_id")), resultSet.getDate("debut").toLocalDate(), resultSet.getDate("fin").toLocalDate()));
+			}
+		}catch(Exception e){
+			throw new DaoException(e.getMessage());
+		}
+		return Optional.empty();
+
 	}
 
 

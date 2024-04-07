@@ -13,6 +13,7 @@ import java.util.*;
 @Service
 public class ReservationService {
 
+    @Autowired
     private ReservationDao reservationDao;
     @Autowired
     public ReservationService(ReservationDao reservationDao) {
@@ -53,6 +54,14 @@ public class ReservationService {
 
     public void delete(int id) throws ServiceException, DaoException, SQLException {
         reservationDao.delete(id);
+    }
+
+    public Reservation findById(long id) throws DaoException, ServiceException {
+        if (reservationDao.findById(id).isPresent()){
+            return reservationDao.findById(id).get();
+        } else {
+            throw new ServiceException("erreur service");
+        }
     }
 
     public int count(){
